@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.videoBackground.health.mapper.VideoMapper">
+    <!-- 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="com.videoBackground.health.entity.Video">
+        <id column="id" property="id" />
+        <result column="category_id" property="categoryId" />
+        <result column="teacher_id" property="teacherId" />
+        <result column="course_name" property="courseName" />
+        <result column="title" property="title" />
+        <result column="cover_url" property="coverUrl" />
+        <result column="video_url" property="videoUrl" />
+        <result column="status" property="status" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="entry_id" property="entryId" />
+        <result column="view_count" property="viewCount" />
+        <result column="duration" property="duration" />
+        <result column="description" property="description" />
+        <result column="has_questions" property="hasQuestions" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+    
+    <!-- 获取视频列表SQL片段 -->
+    <sql id="selectVideoListSql">
+        SELECT 
+            v.id, v.category_id, v.course_name, v.title, v.status,
+            v.cover_url, v.start_time, v.end_time, v.entry_id,
+            v.view_count, v.duration, v.create_time
+        FROM 
+            video v
+        WHERE 1=1
+    </sql>
+    
+    <!-- 搜索条件SQL片段 -->
+    <sql id="videoSearchCondition">
+        <if test="keyword != null and keyword != ''">
+            AND (v.title LIKE CONCAT('%',#{keyword},'%') OR v.course_name LIKE CONCAT('%',#{keyword},'%'))
+        </if>
+        <if test="status != null and status != '' and status != '全部'">
+            AND v.status = #{status}
+        </if>
+        <if test="courseType != null and courseType != ''">
+            AND v.category_id = #{courseType}
+        </if>
+    </sql>
+    
+    <!-- 排序SQL片段 -->
+    <sql id="videoSortCondition">
+        <choose>
+            <when test="sortField != null and sortField == 'createTime' and sortOrder != null and sortOrder == 'asc'">
+                ORDER BY v.create_time ASC
+            </when>
+            <when test="sortField != null and sortField == 'createTime' and (sortOrder == null or sortOrder == 'desc')">
+                ORDER BY v.create_time DESC
+            </when>
+            <when test="sortField != null and sortField == 'viewCount' and sortOrder != null and sortOrder == 'asc'">
+                ORDER BY v.view_count ASC
+            </when>
+            <when test="sortField != null and sortField == 'viewCount' and (sortOrder == null or sortOrder == 'desc')">
+                ORDER BY v.view_count DESC
+            </when>
+            <otherwise>
+                ORDER BY v.create_time DESC
+            </otherwise>
+        </choose>
+    </sql>
+    
+    <!-- 获取视频列表 -->
+    <select id="getVideoList" resultMap="BaseResultMap">
+        <include refid="selectVideoListSql" />
+        <include refid="videoSearchCondition" />
+        <include refid="videoSortCondition" />
+    </select>
+    
+    <!-- 根据ID获取视频详情 -->
+    <select id="getVideoById" resultMap="BaseResultMap">
+        SELECT * FROM video WHERE id = #{id}
+    </select>
+    
+    <!-- 获取视频问题ID列表 -->
+    <select id="getVideoQuestionIds" resultType="java.lang.Long">
+        SELECT id FROM video_question WHERE video_id = #{videoId} ORDER BY sort ASC
+    </select>
+    
+    <!-- 获取相关视频 -->
+    <select id="getRelatedVideos" resultMap="BaseResultMap">
+        SELECT 
+            id, title, cover_url, duration
+        FROM 
+            video
+        WHERE 
+            category_id = #{categoryId} 
+            AND id != #{videoId}
+        ORDER BY 
+            view_count DESC
+        LIMIT #{limit}
+    </select>
+    
+    <!-- 更新视频观看次数 -->
+    <update id="updateViewCount">
+        UPDATE video 
+        SET view_count = view_count + 1
+        WHERE id = #{videoId}
+    </update>
+</mapper> 

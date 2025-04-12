@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.videoBackground.health.mapper.WatchHistoryMapper">
+    <!-- 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="com.videoBackground.health.entity.WatchHistory">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="video_id" property="videoId" />
+        <result column="progress" property="progress" />
+        <result column="last_position" property="lastPosition" />
+        <result column="watch_time" property="watchTime" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+    
+    <!-- 带视频信息的结果映射 -->
+    <resultMap id="WatchHistoryWithVideoMap" type="com.videoBackground.health.vo.WatchHistoryVO">
+        <id column="id" property="id" />
+        <result column="video_id" property="videoId" />
+        <result column="title" property="title" />
+        <result column="cover_url" property="coverUrl" />
+        <result column="duration" property="duration" />
+        <result column="progress" property="progress" />
+        <result column="watch_time" property="watchTime" />
+        <result column="last_position" property="lastPosition" />
+    </resultMap>
+    
+    <!-- 获取用户观看记录列表 -->
+    <select id="getUserWatchHistory" resultMap="WatchHistoryWithVideoMap">
+        SELECT 
+            wh.id, wh.video_id, v.title, v.cover_url, v.duration,
+            wh.progress, wh.last_position, wh.watch_time
+        FROM 
+            watch_history wh
+        LEFT JOIN 
+            video v ON wh.video_id = v.id
+        WHERE 
+            wh.user_id = #{userId}
+        ORDER BY 
+            wh.watch_time DESC
+    </select>
+    
+    <!-- 获取用户对某视频的观看记录 -->
+    <select id="getUserVideoWatchHistory" resultMap="BaseResultMap">
+        SELECT * FROM watch_history 
+        WHERE user_id = #{userId} AND video_id = #{videoId}
+    </select>
+    
+    <!-- 保存或更新观看记录 -->
+    <insert id="saveWatchHistory">
+        INSERT INTO watch_history (user_id, video_id, progress, last_position, watch_time)
+        VALUES (#{userId}, #{videoId}, #{progress}, #{lastPosition}, NOW())
+        ON DUPLICATE KEY UPDATE
+        progress = #{progress},
+        last_position = #{lastPosition},
+        watch_time = NOW(),
+        update_time = NOW()
+    </insert>
+</mapper> 
