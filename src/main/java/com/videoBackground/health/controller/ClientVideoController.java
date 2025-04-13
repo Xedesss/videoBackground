@@ -4,7 +4,7 @@ import com.videoBackground.health.common.PageResult;
 import com.videoBackground.health.common.Result;
 import com.videoBackground.health.common.ResultCode;
 import com.videoBackground.health.service.VideoCategoryService;
-import com.videoBackground.health.service.VideoService;
+import com.videoBackground.health.service.ClientVideoService;
 import com.videoBackground.health.vo.VideoCategoryVO;
 import com.videoBackground.health.vo.VideoDetailVO;
 import com.videoBackground.health.vo.VideoListVO;
@@ -16,17 +16,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 视频控制器
+ * 客户端视频控制器
  */
 @RestController
 @RequestMapping("/video")
-public class VideoController {
+public class ClientVideoController {
     
     @Autowired
     private VideoCategoryService videoCategoryService;
     
     @Autowired
-    private VideoService videoService;
+    private ClientVideoService videoService;
     
     /**
      * 测试用户ID（实际应该从用户会话中获取）

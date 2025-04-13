@@ -3,8 +3,11 @@ package com.videoBackground.health.mapper;
 import com.videoBackground.health.entity.Video;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 视频Mapper接口
@@ -13,54 +16,122 @@ import java.util.List;
 public interface VideoMapper {
     
     /**
-     * 获取视频列表
+     * 分页查询视频列表
      *
-     * @param keyword 搜索关键词
-     * @param status 视频状态：未开始、进行中、已结束
-     * @param courseType 课程类型
-     * @param sortField 排序字段
-     * @param sortOrder 排序方式
+     * @param offset 偏移量
+     * @param limit 查询数量
+     * @param title 标题搜索
+     * @param status 状态筛选
+     * @param orderBy 排序字段
+     * @param orderType 排序方式
      * @return 视频列表
      */
-    List<Video> getVideoList(@Param("keyword") String keyword, 
-                             @Param("status") String status,
-                             @Param("courseType") String courseType,
-                             @Param("sortField") String sortField,
-                             @Param("sortOrder") String sortOrder);
+    List<Video> selectVideoList(
+            @Param("offset") Integer offset,
+            @Param("limit") Integer limit,
+            @Param("title") String title,
+            @Param("status") String status,
+            @Param("orderBy") String orderBy,
+            @Param("orderType") String orderType);
     
     /**
-     * 根据ID获取视频详情
+     * 查询符合条件的视频总数
+     *
+     * @param title 标题搜索
+     * @param status 状态筛选
+     * @return 总数
+     */
+    Long countVideoList(@Param("title") String title, @Param("status") String status);
+    
+    /**
+     * 根据ID查询视频
      *
      * @param id 视频ID
-     * @return 视频详情
+     * @return 视频信息
      */
-    Video getVideoById(@Param("id") Long id);
+    @Select("SELECT * FROM video WHERE id = #{id}")
+    Video selectVideoById(@Param("id") Long id);
     
     /**
-     * 获取视频问题ID列表
+     * 插入视频
      *
-     * @param videoId 视频ID
-     * @return 问题ID列表
+     * @param video 视频信息
+     * @return 影响行数
      */
-    List<Long> getVideoQuestionIds(@Param("videoId") Long videoId);
+    int insertVideo(Video video);
     
     /**
-     * 获取相关视频
+     * 更新视频
      *
-     * @param categoryId 分类ID
-     * @param videoId 当前视频ID
-     * @param limit 限制数量
-     * @return 相关视频列表
+     * @param video 视频信息
+     * @return 影响行数
      */
-    List<Video> getRelatedVideos(@Param("categoryId") Long categoryId, 
-                                 @Param("videoId") Long videoId,
-                                 @Param("limit") Integer limit);
+    int updateVideo(Video video);
+    
+    /**
+     * 删除视频
+     *
+     * @param id 视频ID
+     * @return 影响行数
+     */
+    int deleteVideo(@Param("id") Long id);
     
     /**
      * 更新视频观看次数
      *
-     * @param videoId 视频ID
-     * @return 更新结果
+     * @param id 视频ID
+     * @return 影响行数
      */
-    int updateViewCount(@Param("videoId") Long videoId);
+    @Update("UPDATE video SET view_count = view_count + 1 WHERE id = #{id}")
+    int incrementViewCount(@Param("id") Long id);
+    
+    /**
+     * 查询视频标签
+     *
+     * @param videoId 视频ID
+     * @return 标签列表
+     */
+    List<String> selectVideoTags(@Param("videoId") Long videoId);
+    
+    /**
+     * 插入视频标签
+     *
+     * @param videoId 视频ID
+     * @param tags 标签列表
+     * @return 影响行数
+     */
+    int insertVideoTags(@Param("videoId") Long videoId, @Param("tags") List<String> tags);
+    
+    /**
+     * 删除视频标签
+     *
+     * @param videoId 视频ID
+     * @return 影响行数
+     */
+    int deleteVideoTags(@Param("videoId") Long videoId);
+    
+    /**
+     * 查询视频分销商
+     *
+     * @param videoId 视频ID
+     * @return 分销商列表
+     */
+    List<Map<String, Object>> selectVideoDistributors(@Param("videoId") Long videoId);
+    
+    /**
+     * 插入视频分销商关系
+     *
+     * @param videoId 视频ID
+     * @param distributorIds 分销商ID列表
+     * @return 影响行数
+     */
+    int insertVideoDistributors(@Param("videoId") Long videoId, @Param("distributorIds") List<Long> distributorIds);
+    
+    /**
+     * 删除视频分销商关系
+     *
+     * @param videoId 视频ID
+     * @return 影响行数
+     */
+    int deleteVideoDistributors(@Param("videoId") Long videoId);
 } 

@@ -2,11 +2,18 @@ package com.videoBackground.health.vo;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
- * 视频观看历史视图对象
+ * 观看历史视图对象
  */
 @Data
 public class WatchHistoryVO {
+    /**
+     * 记录ID
+     */
+    private Long id;
+    
     /**
      * 视频ID
      */
@@ -15,35 +22,40 @@ public class WatchHistoryVO {
     /**
      * 视频标题
      */
-    private String title;
+    private String videoTitle;
     
     /**
-     * 封面图片URL
+     * 视频封面
      */
-    private String coverUrl;
+    private String videoCover;
     
     /**
-     * 课程名称
+     * 视频分类
      */
-    private String courseName;
+    private String categoryName;
     
     /**
-     * 观看时间（如：1天前观看）
+     * 用户ID
      */
-    private String watchTime;
+    private Long userId;
     
     /**
-     * 观看进度（秒）
+     * 观看时间（秒）
      */
-    private Integer progress;
+    private Integer watchTime;
     
     /**
-     * 总时长（格式化为 MM:SS）
+     * 视频总时长（秒）
      */
-    private String duration;
+    private Integer totalTime;
     
     /**
-     * 是否已完成观看（进度超过95%）
+     * 观看进度（百分比）
      */
-    private Boolean completed;
+    private Double progress;
+    
+    /**
+     * 最后观看时间
+     */
+    private Date lastWatchTime;
 } 

@@ -5,9 +5,9 @@ import com.videoBackground.health.vo.VideoDetailVO;
 import com.videoBackground.health.vo.VideoListVO;
 
 /**
- * 视频服务接口
+ * 客户端视频服务接口
  */
-public interface VideoService {
+public interface ClientVideoService {
     
     /**
      * 获取视频列表
@@ -37,6 +37,7 @@ public interface VideoService {
      * 上报视频观看进度
      *
      * @param videoId 视频ID
+     * @param userId 用户ID
      * @param watchTime 观看时间(秒)
      * @param totalTime 总时长(秒)
      * @return 进度百分比

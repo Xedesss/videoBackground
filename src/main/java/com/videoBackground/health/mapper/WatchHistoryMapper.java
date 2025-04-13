@@ -2,43 +2,74 @@ package com.videoBackground.health.mapper;
 
 import com.videoBackground.health.entity.WatchHistory;
 import com.videoBackground.health.vo.WatchHistoryVO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
- * 观看记录Mapper接口
+ * 观看历史Mapper接口
  */
+@Mapper
 public interface WatchHistoryMapper {
     
     /**
-     * 获取用户观看记录列表
+     * 查询用户观看历史
      *
      * @param userId 用户ID
-     * @return 观看记录列表
+     * @param offset 偏移量
+     * @param limit 限制数量
+     * @return 观看历史列表
      */
-    List<WatchHistoryVO> getUserWatchHistory(@Param("userId") Long userId);
+    List<WatchHistoryVO> selectUserWatchHistory(
+            @Param("userId") Long userId,
+            @Param("offset") Integer offset,
+            @Param("limit") Integer limit);
     
     /**
-     * 获取用户对某视频的观看记录
+     * 统计用户观看历史总数
      *
      * @param userId 用户ID
-     * @param videoId 视频ID
-     * @return 观看记录
+     * @return 总数
      */
-    WatchHistory getUserVideoWatchHistory(@Param("userId") Long userId, @Param("videoId") Long videoId);
+    Long countUserWatchHistory(@Param("userId") Long userId);
     
     /**
-     * 保存或更新观看记录
+     * 更新观看历史
      *
-     * @param userId 用户ID
      * @param videoId 视频ID
-     * @param progress 进度百分比
-     * @param lastPosition 上次观看位置(秒)
+     * @param userId 用户ID
+     * @param watchTime 观看时间（秒）
+     * @param totalTime 视频总时长（秒）
+     * @param progress 观看进度
+     * @param lastWatchTime 最后观看时间
      * @return 影响行数
      */
-    int saveWatchHistory(@Param("userId") Long userId, 
-                         @Param("videoId") Long videoId,
-                         @Param("progress") Integer progress, 
-                         @Param("lastPosition") Integer lastPosition);
+    int updateWatchHistory(
+            @Param("videoId") Long videoId,
+            @Param("userId") Long userId,
+            @Param("watchTime") Integer watchTime,
+            @Param("totalTime") Integer totalTime,
+            @Param("progress") double progress,
+            @Param("lastWatchTime") Date lastWatchTime);
+    
+    /**
+     * 插入观看历史
+     *
+     * @param videoId 视频ID
+     * @param userId 用户ID
+     * @param watchTime 观看时间（秒）
+     * @param totalTime 视频总时长（秒）
+     * @param progress 观看进度
+     * @param lastWatchTime 最后观看时间
+     * @return 影响行数
+     */
+    int insertWatchHistory(
+            @Param("videoId") Long videoId,
+            @Param("userId") Long userId,
+            @Param("watchTime") Integer watchTime,
+            @Param("totalTime") Integer totalTime,
+            @Param("progress") double progress,
+            @Param("lastWatchTime") Date lastWatchTime);
 } 

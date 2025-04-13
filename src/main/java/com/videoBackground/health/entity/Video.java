@@ -3,31 +3,18 @@ package com.videoBackground.health.entity;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
- * 视频实体类
+ * 视频实体
  */
 @Data
 public class Video {
+    
     /**
-     * ID
+     * 视频ID
      */
     private Long id;
-    
-    /**
-     * 分类ID
-     */
-    private Long categoryId;
-    
-    /**
-     * 讲师ID
-     */
-    private Long teacherId;
-    
-    /**
-     * 课程名称
-     */
-    private String courseName;
     
     /**
      * 视频标题
@@ -35,34 +22,34 @@ public class Video {
     private String title;
     
     /**
-     * 封面图URL
+     * 视频描述
      */
-    private String coverUrl;
+    private String description;
     
     /**
      * 视频URL
      */
-    private String videoUrl;
+    private String url;
     
     /**
-     * 状态：未开始、进行中、已结束
+     * 封面URL
      */
-    private String status;
+    private String cover;
     
     /**
-     * 开始时间
+     * 视频时长（秒）
      */
-    private Date startTime;
+    private Integer duration;
     
     /**
-     * 结束时间
+     * 视频文件大小（字节）
      */
-    private Date endTime;
+    private Long size;
     
     /**
-     * 课程ID或期数
+     * 上传时间
      */
-    private String entryId;
+    private Date uploadTime;
     
     /**
      * 观看次数
@@ -70,27 +57,32 @@ public class Video {
     private Integer viewCount;
     
     /**
-     * 视频时长(秒)
+     * 点赞次数
      */
-    private Integer duration;
+    private Integer likeCount;
     
     /**
-     * 视频描述
+     * 评论次数
      */
-    private String description;
+    private Integer commentCount;
     
     /**
-     * 是否有问题：0-否，1-是
+     * 视频状态（published/draft/disabled）
      */
-    private Boolean hasQuestions;
+    private String status;
     
     /**
-     * 创建时间
+     * 是否推荐
      */
-    private Date createTime;
+    private Boolean isRecommended;
     
     /**
-     * 更新时间
+     * 标签（非数据库字段）
      */
-    private Date updateTime;
+    private transient List<String> tags;
+    
+    /**
+     * 分销商ID（非数据库字段）
+     */
+    private transient List<Long> distributorIds;
 } 
